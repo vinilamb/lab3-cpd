@@ -11,6 +11,7 @@ typedef struct
     std::string chave;
     Registro* registro;
     bool ocupado;
+    bool usado;
 } Elemento;
 
 class TabelaHash_EndAberto

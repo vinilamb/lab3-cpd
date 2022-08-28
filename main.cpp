@@ -17,18 +17,19 @@ int main()
     std::vector<Registro> dados_entrada;
     std::string linha;
 
-//    std::ifstream entrada("dataset.txt");  // Abre arquivo de entrada
-    std::ifstream entrada("dataset-short.txt");  // Abre arquivo de entrada reduzido
+std::ifstream entrada("dataset.txt");  // Abre arquivo de entrada
+//    std::ifstream entrada("dataset-short.txt");  // Abre arquivo de entrada reduzido
 
     while (std::getline(entrada, linha))   // Le linha a linha
     {
         Registro reg(linha);         // Cria registro
         dados_entrada.push_back(reg);    // Coloca num vetor de registros
     }
+
     unsigned int N = dados_entrada.size();
 
-    int M_EndA = 30;
-    int M_EndF = 10;
+    int M_EndA = 5000;
+    int M_EndF = 5000;
 
     TabelaHash_EndAberto hash_buscalinear(M_EndA);
     TabelaHash_EndAberto hash_doublehashing(M_EndA);

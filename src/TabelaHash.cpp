@@ -71,9 +71,10 @@ bool TabelaHash_EndAberto::insereEABL(std::string chave, Registro* reg)
     bool inseriu = false;
 
     ///TODO: Completar funcao de insercao em tabela de enderecamento aberto com busca linear
-    int endCalc, endLivre, e, marca;
+    int endCalc, endLivre, marca;
+    bool chaveExiste = false;
 
-    e = marca = -1;
+    marca = -1;
     endCalc = hashString(chave, M);
     endLivre = endCalc;
 
@@ -82,33 +83,24 @@ bool TabelaHash_EndAberto::insereEABL(std::string chave, Registro* reg)
     }
 
     do {
-        if (tabela[endLivre].usado) {
-            if (tabela[endLivre].ocupado) {
-                if (tabela[endLivre].chave == chave) {
-                    e = endLivre;
-                } else {
-                    endLivre = (endLivre % tabela.size()) + 1;
-                }
+        if (tabela[endLivre].ocupado) {
+            if (tabela[endLivre].chave == chave) {
+                inseriu = true;
+                break;
             } else {
-                if (marca == -1) {
-                    marca = endLivre;
-                }
-                endLivre = (endLivre % tabela.size()) + 1;
+                endLivre = (endLivre + 1) % tabela.size();
             }
-        }
-        else {
-            if (marca == -1) {
-                marca = endLivre;
-            }
+        } else {
+            inseriu = true;
+            marca = endLivre;
             break;
         }
-    } while (endCalc != endLivre || e == -1);
+    } while (endLivre != endCalc);
 
-    if (e == -1 && marca != -1) {
+    if (marca != -1) {
         tabela[marca].chave = chave;
         tabela[marca].ocupado = true;
         tabela[marca].registro = reg;
-        inseriu = true;
     }
 
     totalColisoes += colisoes;
@@ -121,23 +113,19 @@ Registro* TabelaHash_EndAberto::buscaEABL(std::string chave)
     Registro* r = NULL;
 
     ///TODO: Completar funcao de busca em tabela de enderecamento aberto com busca linear
-    int e, endCalc, endLivre;
-    e = -1;
+    int endCalc, endLivre;
     endCalc = hashString(chave, M);
     endLivre = endCalc;
 
     do {
-        if (tabela[endCalc].usado) {
-            if (tabela[endCalc].ocupado && tabela[endCalc].chave == chave) {
-                e = endLivre;
-                r = tabela[e].registro;
-            } else {
-                endLivre = (endLivre % tabela.size()) + 1;
+        if (tabela[endLivre].ocupado) {
+            if (tabela[endLivre].chave == chave) {
+                r = tabela[endLivre].registro;
+                break;
             }
-        } else {
-            break;
+            endLivre = (endLivre + 1) % tabela.size();
         }
-    } while (endLivre != endCalc || e == -1);
+    } while (r == nullptr && endLivre != endCalc);
 
     return r;
 }
@@ -148,9 +136,10 @@ bool TabelaHash_EndAberto::insereDoubleHashing(std::string chave, Registro* reg)
     bool inseriu = false;
 
     ///TODO: Completar funcao de insercao em tabela de enderecamento aberto com double hashing
-    int endCalc, endLivre, e, marca, fatorDuploHash;
+    int endCalc, endLivre, marca, fatorDuploHash;
+    bool chaveExiste = false;
 
-    e = marca = -1;
+    marca = -1;
     endCalc = hashString(chave, M);
     endLivre = endCalc;
     fatorDuploHash = hashDupla(chave, M);
@@ -161,36 +150,26 @@ bool TabelaHash_EndAberto::insereDoubleHashing(std::string chave, Registro* reg)
 
     int j = 0;
     do {
-        if (tabela[endLivre].usado) {
-            if (tabela[endLivre].ocupado) {
-                if (tabela[endLivre].chave == chave) {
-                    e = endLivre;
-                } else {
-                    endLivre = (endCalc + (j * fatorDuploHash)) % tabela.size();
-                }
+        if (tabela[endLivre].ocupado) {
+            if (tabela[endLivre].chave == chave) {
+                inseriu = true;
+                break;
             } else {
-                if (marca == -1) {
-                    marca = endLivre;
-                }
-                endLivre = (endCalc + (j * fatorDuploHash)) % tabela.size();
+                endLivre = (endLivre + (j * fatorDuploHash)) % tabela.size();
             }
-        }
-        else {
-            if (marca == -1) {
-                marca = endLivre;
-            }
+        } else {
+            inseriu = true;
+            marca = endLivre;
             break;
         }
 
         j = j + 1;
-    } while (endCalc != endLivre || e == -1);
+    } while (endLivre != endCalc);
 
-    if (e == -1 && marca != -1) {
+    if (marca != -1) {
         tabela[marca].chave = chave;
         tabela[marca].ocupado = true;
-        tabela[marca].usado = true;
         tabela[marca].registro = reg;
-        inseriu = true;
     }
 
     totalColisoes += colisoes;
@@ -203,27 +182,23 @@ Registro* TabelaHash_EndAberto::buscaDoubleHashing(std::string chave)
     Registro* r = NULL;
 
     ///TODO: Completar funcao de busca em tabela de enderecamento aberto com double hashing
-    int e, endCalc, endLivre, fatorDuploHash;
-    e = -1;
+    int endCalc, endLivre, fatorDuploHash;
     endCalc = hashString(chave, M);
     endLivre = endCalc;
     fatorDuploHash = hashDupla(chave, M);
 
     int j = 0;
     do {
-        if (tabela[endCalc].usado) {
-            if (tabela[endCalc].ocupado && tabela[endCalc].chave == chave) {
-                e = endLivre;
-                r = tabela[e].registro;
-            } else {
-                endLivre = (endCalc + (j * fatorDuploHash)) % tabela.size();
+        if (tabela[endLivre].ocupado) {
+            if (tabela[endLivre].chave == chave) {
+                r = tabela[endLivre].registro;
+                break;
             }
-        } else {
-            break;
+            endLivre = (endLivre + (j * fatorDuploHash)) % tabela.size();
         }
 
         j = j + 1;
-    } while (endLivre != endCalc || e == -1);
+    } while (r == nullptr && endLivre != endCalc);
 
     return r;
 }

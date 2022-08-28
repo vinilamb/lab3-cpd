@@ -57,6 +57,8 @@ Registro::Registro(std::string linha)
     valor = std::stof(row[5]);
 }
 
+Registro::Registro() {};
+
 Registro::~Registro()
 {
     //destrutor

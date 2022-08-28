@@ -12,6 +12,7 @@ class Registro
     public: // elementos que podem ser acessados externamente
 
         Registro(std::string str); // construtor
+        Registro();
 
         ~Registro(); // destrutor
 
