@@ -4,10 +4,14 @@
 #include "include/Registro.h"
 #include "include/TabelaHash.h"
 
+#include "Windows.h"
+
 #define DIV_CEIL(x,y) ((x/y) + (x%y!=0))
 
 int main()
 {
+    SetConsoleOutputCP( 65001 );
+
     std::cout << "LAB 3" << std::endl;
 
     std::vector<Registro> dados_entrada;
@@ -30,7 +34,7 @@ int main()
     TabelaHash_EndAberto hash_doublehashing(M_EndA);
     TabelaHash_EndFechado hash_chaining(M_EndF);
     TabelaHash_EndFechado hash_buckets(M_EndF, DIV_CEIL(N,M_EndF));
-//    std::cout << "N " << N << " M " << M_EndF << " N/M " << DIV_CEIL(N,M_EndF) << std::endl;
+    std::cout << "N " << N << " M " << M_EndF << " N/M " << DIV_CEIL(N,M_EndF) << std::endl;
 
     std::cout << "----------------------------------------------" <<std::endl;
     std::cout << "PARTE 1) INSERINDO ELEMENTOS NAS TABELAS HASH:" <<std::endl;

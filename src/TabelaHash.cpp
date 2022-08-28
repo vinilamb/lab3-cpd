@@ -3,24 +3,22 @@
 #include <iostream>
 
 #define R 31
-
-#define R2 37
-#define M2 19
+#define R2 29
 
 // Função de Hashing para Strings
 int hashString(const std::string& str, int M)
 {
     int hashComputado = 0;
-    for (auto &ch : str)
+    for (unsigned char ch : str)
         hashComputado = (R * hashComputado + ch) % M;
     return hashComputado;
 }
 
-int hashDupla(const std::string& str)
+int hashDupla(const std::string& str, int M)
 {
     int hashComputado = 0;
-    for (auto &ch : str)
-        hashComputado = (R2 * hashComputado + ch) % M2;
+    for (unsigned char ch : str)
+        hashComputado = (R2 * hashComputado + ch) % M;
     return hashComputado;
 }
 
@@ -48,7 +46,7 @@ M(m), TamanhoBucket(t)
 
     tabelaBuckets.resize(M);
     for(unsigned int i=0;i<M; i++)
-        tabelaBuckets[i].resize(TamanhoBucket);
+        tabelaBuckets[i].reserve(TamanhoBucket);
 
     totalColisoes=0;
 }
@@ -62,9 +60,6 @@ TabelaHash_EndFechado::~TabelaHash_EndFechado()
 {
 
 }
-
-
-
 
 ////////////////////////////
 /// ENDERECAMENTO ABERTO ///
@@ -112,7 +107,6 @@ bool TabelaHash_EndAberto::insereEABL(std::string chave, Registro* reg)
     if (e == -1 && marca != -1) {
         tabela[marca].chave = chave;
         tabela[marca].ocupado = true;
-        tabela[marca].usado = true;
         tabela[marca].registro = reg;
         inseriu = true;
     }
@@ -159,7 +153,7 @@ bool TabelaHash_EndAberto::insereDoubleHashing(std::string chave, Registro* reg)
     e = marca = -1;
     endCalc = hashString(chave, M);
     endLivre = endCalc;
-    fatorDuploHash = hashDupla(chave);
+    fatorDuploHash = hashDupla(chave, M);
 
     if (tabela[endCalc].ocupado) {
         colisoes = 1;
@@ -201,9 +195,6 @@ bool TabelaHash_EndAberto::insereDoubleHashing(std::string chave, Registro* reg)
 
     totalColisoes += colisoes;
 
-
-    totalColisoes += colisoes;
-
     return inseriu;
 }
 
@@ -216,7 +207,7 @@ Registro* TabelaHash_EndAberto::buscaDoubleHashing(std::string chave)
     e = -1;
     endCalc = hashString(chave, M);
     endLivre = endCalc;
-    fatorDuploHash = hashDupla(chave);
+    fatorDuploHash = hashDupla(chave, M);
 
     int j = 0;
     do {
@@ -296,7 +287,7 @@ Registro* TabelaHash_EndFechado::buscaChaining(std::string chave)
     int hashComputada;
     hashComputada = hashString(chave, M);
 
-    for (auto elem : tabelaChaining[hashComputada])
+    for (const auto& elem : tabelaChaining[hashComputada])
     {
         if (elem.chave == chave) {
             r = elem.registro;
@@ -337,7 +328,7 @@ bool TabelaHash_EndFechado::insereBuckets(std::string chave, Registro* reg)
         inseriu = true;
 
         bool encontrou = false;
-        for (auto elem : bucket) {
+        for (const auto& elem : bucket) {
             if (elem.chave == chave) {
                 encontrou = true;
                 break;
@@ -363,9 +354,9 @@ Registro* TabelaHash_EndFechado::buscaBuckets(std::string chave)
 
     int hashComputada;
     hashComputada = hashString(chave, M);
-    auto& bucket = tabelaBuckets[hashComputada];
+    const auto& bucket = tabelaBuckets[hashComputada];
 
-    for (auto elem : bucket)
+    for (const auto& elem : bucket)
     {
         if (elem.chave == chave) {
             r = elem.registro;
@@ -375,7 +366,7 @@ Registro* TabelaHash_EndFechado::buscaBuckets(std::string chave)
 
     if (r == NULL)
     {
-        for (auto elem : overflow)
+        for (const auto& elem : overflow)
         {
             if (elem.chave == chave) {
                 r = elem.registro;
