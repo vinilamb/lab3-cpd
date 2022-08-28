@@ -373,7 +373,16 @@ Registro* TabelaHash_EndFechado::buscaBuckets(std::string chave)
         }
     }
 
-
+    if (r == NULL)
+    {
+        for (auto elem : overflow)
+        {
+            if (elem.chave == chave) {
+                r = elem.registro;
+                break;
+            }
+        }
+    }
 
     return r;
 }

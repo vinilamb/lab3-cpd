@@ -13,8 +13,8 @@ int main()
     std::vector<Registro> dados_entrada;
     std::string linha;
 
-    std::ifstream entrada("dataset.txt");  // Abre arquivo de entrada
-//    std::ifstream entrada("dataset-short.txt");  // Abre arquivo de entrada reduzido
+//    std::ifstream entrada("dataset.txt");  // Abre arquivo de entrada
+    std::ifstream entrada("dataset-short.txt");  // Abre arquivo de entrada reduzido
 
     while (std::getline(entrada, linha))   // Le linha a linha
     {
